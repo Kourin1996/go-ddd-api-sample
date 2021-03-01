@@ -3,21 +3,24 @@ package books
 import (
 	"net/http"
 
-	"github.com/google/uuid"
+	"github.com/go-pg/pg/v10"
 	"github.com/labstack/echo/v4"
 
 	"github.com/Kourin1996/go-crud-api-sample/pkg/models"
+	"github.com/Kourin1996/go-crud-api-sample/pkg/repositories/book"
 )
 
-var books map[string]models.Book
+var bookRepository book.IBookRepository
 
 func init() {
-	books = make(map[string]models.Book)
-	books["hoge"] = models.Book{
-		Name:        "Hello Potter",
-		Description: "Interestring Book",
-		Price:       1500,
-	}
+	// todo: get from route
+	db := pg.Connect(&pg.Options{
+		Addr:     ":5432",
+		User:     "postgres",
+		Password: "postgres",
+		Database: "test",
+	})
+	bookRepository = book.NewRepository(db)
 }
 
 func SetRoutes(g *echo.Group) {
@@ -38,30 +41,37 @@ func postBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	uuidObj, _ := uuid.NewUUID()
-	id := uuidObj.String()
-	books[id] = models.Book(*dto)
+	book := &models.Book{
+		Name:        dto.Name,
+		Description: dto.Description,
+		Price:       dto.Price,
+	}
+	err := bookRepository.CreateBook(book)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
 
-	return c.String(http.StatusCreated, id)
+	return c.JSON(http.StatusCreated, *book)
 }
 
 func getBook(c echo.Context) error {
-	id := ""
-	err := echo.PathParamsBinder(c).String("id", &id).BindError()
+	id := 0
+	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	book, ok := books[id]
-	if !ok {
-		return echo.NewHTTPError(http.StatusNotFound)
+	book, err := bookRepository.GetBook(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
-	return c.JSON(http.StatusOK, book)
+
+	return c.JSON(http.StatusOK, *book)
 }
 
 func putBook(c echo.Context) error {
-	id := ""
-	err := echo.PathParamsBinder(c).String("id", &id).BindError()
+	id := 0
+	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
@@ -74,24 +84,30 @@ func putBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book := models.Book(*dto)
-	books[id] = book
+	book := &models.Book{
+		Name:        dto.Name,
+		Description: dto.Description,
+		Price:       dto.Price,
+	}
+	err = bookRepository.UpdateBook(id, book)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
 
-	return c.JSON(http.StatusOK, book)
+	return c.JSON(http.StatusOK, *book)
 }
 
 func deleteBook(c echo.Context) error {
-	id := ""
-	err := echo.PathParamsBinder(c).String("id", &id).BindError()
+	id := 0
+	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	_, ok := books[id]
-	if !ok {
-		return echo.NewHTTPError(http.StatusNotFound)
+	err = bookRepository.DeleteBook(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
-	delete(books, id)
 
 	return c.String(http.StatusOK, "")
 }
