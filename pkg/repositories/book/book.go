@@ -6,6 +6,7 @@ import (
 	"github.com/go-pg/pg/v10"
 )
 
+//todo move to interface layer
 type IBookRepository interface {
 	CreateBook(book *models.Book) error
 	GetBook(id int) (*models.Book, error)
