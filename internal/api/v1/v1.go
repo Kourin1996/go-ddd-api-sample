@@ -11,7 +11,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/Kourin1996/go-crud-api-sample/internal/api/v1/controllers/books"
-	"github.com/Kourin1996/go-crud-api-sample/pkg/repositories/book"
+	BookRepository "github.com/Kourin1996/go-crud-api-sample/pkg/repositories/book"
+	BookService "github.com/Kourin1996/go-crud-api-sample/pkg/services/book"
 )
 
 //todo: move to common
@@ -80,8 +81,9 @@ func Start() error {
 		Password: config.DbPassword,
 		Database: config.DbDatabase,
 	})
-	bookRepo := book.NewRepository(db)
-	books.NewBookHandler(g, bookRepo)
+	bookRepo := BookRepository.NewRepository(db)
+	bookService := BookService.NewBookService(bookRepo)
+	books.NewBookHandler(g, bookService)
 
 	e.Logger.Fatal(e.Start(config.Address))
 

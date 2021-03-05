@@ -6,15 +6,15 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/Kourin1996/go-crud-api-sample/pkg/models"
-	"github.com/Kourin1996/go-crud-api-sample/pkg/repositories/book"
+	"github.com/Kourin1996/go-crud-api-sample/pkg/services/book"
 )
 
 type BookHandler struct {
-	bookRepo book.IBookRepository
+	bookService book.IBookService
 }
 
-func NewBookHandler(g *echo.Group, bookRepo book.IBookRepository) *BookHandler {
-	handler := &BookHandler{bookRepo: bookRepo}
+func NewBookHandler(g *echo.Group, bookService book.IBookService) *BookHandler {
+	handler := &BookHandler{bookService: bookService}
 
 	group := g.Group("/books")
 	group.POST("/", handler.postBook)
@@ -39,7 +39,7 @@ func (h *BookHandler) postBook(c echo.Context) error {
 		Description: dto.Description,
 		Price:       dto.Price,
 	}
-	err := h.bookRepo.CreateBook(book)
+	book, err := h.bookService.CreateBook(book)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -54,7 +54,7 @@ func (h *BookHandler) getBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	book, err := h.bookRepo.GetBook(id)
+	book, err := h.bookService.GetBook(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -82,7 +82,7 @@ func (h *BookHandler) putBook(c echo.Context) error {
 		Description: dto.Description,
 		Price:       dto.Price,
 	}
-	err = h.bookRepo.UpdateBook(id, book)
+	book, err = h.bookService.UpdateBook(id, book)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -97,7 +97,7 @@ func (h *BookHandler) deleteBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	err = h.bookRepo.DeleteBook(id)
+	err = h.bookService.DeleteBook(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}

@@ -8,9 +8,9 @@ import (
 
 //todo move to interface layer
 type IBookRepository interface {
-	CreateBook(book *models.Book) error
+	CreateBook(book *models.Book) (*models.Book, error)
 	GetBook(id int) (*models.Book, error)
-	UpdateBook(id int, newData *models.Book) error
+	UpdateBook(id int, newData *models.Book) (*models.Book, error)
 	DeleteBook(id int) error
 }
 
@@ -22,30 +22,35 @@ func NewRepository(db *pg.DB) IBookRepository {
 	return &BookRepository{repositories.Repository{DB: db}}
 }
 
-func (r *BookRepository) CreateBook(book *models.Book) error {
-	_, err := r.DB.Model(book).Returning("*").Insert()
-	return err
-}
+func (r *BookRepository) CreateBook(book *models.Book) (*models.Book, error) {
+	entity := ToEntity(book)
 
-func (r *BookRepository) GetBook(id int) (*models.Book, error) {
-	book := new(models.Book)
-	err := r.DB.Model(book).Where("id = ?", id).Limit(1).Select()
+	_, err := r.DB.Model(entity).Returning("*").Insert()
 	if err != nil {
 		return nil, err
 	}
-
-	return book, nil
+	return ToModel(entity), nil
 }
 
-func (r *BookRepository) UpdateBook(id int, book *models.Book) error {
-	book.ID = id
+func (r *BookRepository) GetBook(id int) (*models.Book, error) {
+	entity := new(BookEntity)
 
-	_, err := r.DB.Model(book).WherePK().Returning("*").Update()
+	err := r.DB.Model(entity).Where("id = ?", id).Limit(1).Select()
 	if err != nil {
-		return err
+		return nil, err
 	}
+	return ToModel(entity), nil
+}
 
-	return nil
+func (r *BookRepository) UpdateBook(id int, book *models.Book) (*models.Book, error) {
+	entity := ToEntity(book)
+	entity.ID = &id
+
+	_, err := r.DB.Model(entity).WherePK().Returning("*").Update()
+	if err != nil {
+		return nil, err
+	}
+	return ToModel(entity), nil
 }
 
 func (r *BookRepository) DeleteBook(id int) error {
