@@ -14,27 +14,27 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type BookRepositoryMock struct {
+type BookServiceMock struct {
 	mock.Mock
 }
 
-func (m *BookRepositoryMock) CreateBook(book *models.Book) error {
+func (m *BookServiceMock) CreateBook(book *models.Book) (*models.Book, error) {
 	ret := m.Called(book)
 	book.ID = 0
-	return ret.Error(0)
+	return ret.Get(0).(*models.Book), ret.Error(1)
 }
 
-func (m *BookRepositoryMock) GetBook(id int) (*models.Book, error) {
+func (m *BookServiceMock) GetBook(id int) (*models.Book, error) {
 	ret := m.Called(id)
 	return ret.Get(0).(*models.Book), ret.Error(1)
 }
 
-func (m *BookRepositoryMock) UpdateBook(id int, book *models.Book) error {
+func (m *BookServiceMock) UpdateBook(id int, book *models.Book) (*models.Book, error) {
 	ret := m.Called(id, book)
-	return ret.Error(0)
+	return ret.Get(0).(*models.Book), ret.Error(1)
 }
 
-func (m *BookRepositoryMock) DeleteBook(id int) error {
+func (m *BookServiceMock) DeleteBook(id int) error {
 	ret := m.Called(id)
 	return ret.Error(0)
 }
@@ -52,6 +52,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 
 func TestPostBook(t *testing.T) {
 	book := models.Book{
+		ID:          0,
 		Name:        "sensuikan1973",
 		Description: "Nice",
 		Price:       100,
@@ -67,9 +68,9 @@ func TestPostBook(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	g := e.Group("/v1/books")
-	mockRepo := &BookRepositoryMock{}
-	mockRepo.On("CreateBook", &book).Return(nil)
-	h := NewBookHandler(g, mockRepo)
+	mockService := &BookServiceMock{}
+	mockService.On("CreateBook", &book).Return(&book, nil)
+	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.postBook(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
@@ -94,9 +95,9 @@ func TestGetBook(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	g := e.Group("/v1/books")
-	mockRepo := &BookRepositoryMock{}
-	mockRepo.On("GetBook", book.ID).Return(&book, nil)
-	h := NewBookHandler(g, mockRepo)
+	mockService := &BookServiceMock{}
+	mockService.On("GetBook", book.ID).Return(&book, nil)
+	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.getBook(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -122,9 +123,9 @@ func TestPutBook(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	g := e.Group("/v1/books")
-	mockRepo := &BookRepositoryMock{}
-	mockRepo.On("UpdateBook", book.ID, &book).Return(nil)
-	h := NewBookHandler(g, mockRepo)
+	mockService := &BookServiceMock{}
+	mockService.On("UpdateBook", book.ID, &book).Return(&book, nil)
+	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.putBook(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -143,9 +144,9 @@ func TestDeleteBook(t *testing.T) {
 	c := e.NewContext(req, rec)
 
 	g := e.Group("/v1/books")
-	mockRepo := &BookRepositoryMock{}
-	mockRepo.On("DeleteBook", id).Return(nil)
-	h := NewBookHandler(g, mockRepo)
+	mockService := &BookServiceMock{}
+	mockService.On("DeleteBook", id).Return(nil)
+	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.deleteBook(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
