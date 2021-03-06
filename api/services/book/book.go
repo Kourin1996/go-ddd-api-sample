@@ -2,7 +2,7 @@ package book
 
 import (
 	"github.com/Kourin1996/go-crud-api-sample/api/models"
-	"github.com/Kourin1996/go-crud-api-sample/api/repositories/book"
+	"github.com/Kourin1996/go-crud-api-sample/api/repositories/pg/book"
 )
 
 // todo: move to other dir

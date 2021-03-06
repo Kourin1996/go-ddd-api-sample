@@ -2,7 +2,7 @@ package book
 
 import (
 	"github.com/Kourin1996/go-crud-api-sample/api/models"
-	"github.com/Kourin1996/go-crud-api-sample/api/repositories"
+	repositories "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg"
 	"github.com/go-pg/pg/v10"
 )
 
