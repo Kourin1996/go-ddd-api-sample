@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	v1 "github.com/Kourin1996/go-crud-api-sample/internal/api/v1"
+	v1 "github.com/Kourin1996/go-crud-api-sample/api/controllers"
 )
 
 func main() {

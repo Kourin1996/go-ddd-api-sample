@@ -10,9 +10,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
+	"github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/books"
 	BookRepository "github.com/Kourin1996/go-crud-api-sample/api/repositories/book"
 	BookService "github.com/Kourin1996/go-crud-api-sample/api/services/book"
-	"github.com/Kourin1996/go-crud-api-sample/api/v1/controllers/books"
 )
 
 //todo: move to common
