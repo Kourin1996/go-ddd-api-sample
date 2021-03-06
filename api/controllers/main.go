@@ -18,10 +18,10 @@ type Config struct {
 
 func Start(config Config, db *pg.DB) error {
 	e := echo.New()
+	e.Pre(middleware.AddTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	//todo: trailing slash
 	e.Validator = common.NewCustomValidator()
 
 	g := e.Group("/v1")
