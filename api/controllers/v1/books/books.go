@@ -5,8 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/Kourin1996/go-crud-api-sample/api/models"
-	"github.com/Kourin1996/go-crud-api-sample/api/services/book"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 )
 
 type BookHandler struct {
@@ -34,7 +33,7 @@ func (h *BookHandler) postBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book := &models.Book{
+	book := &book.Book{
 		Name:        dto.Name,
 		Description: dto.Description,
 		Price:       dto.Price,
@@ -77,7 +76,7 @@ func (h *BookHandler) putBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book := &models.Book{
+	book := &book.Book{
 		Name:        dto.Name,
 		Description: dto.Description,
 		Price:       dto.Price,

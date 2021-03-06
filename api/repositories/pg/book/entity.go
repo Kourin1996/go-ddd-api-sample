@@ -1,7 +1,7 @@
 package book
 
 import (
-	"github.com/Kourin1996/go-crud-api-sample/api/models"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 )
 
 type BookEntity struct {
@@ -12,7 +12,7 @@ type BookEntity struct {
 	Price       int64
 }
 
-func ToEntity(b *models.Book) *BookEntity {
+func ToEntity(b *book.Book) *BookEntity {
 	return &BookEntity{
 		Name:        b.Name,
 		Description: b.Description,
@@ -20,8 +20,8 @@ func ToEntity(b *models.Book) *BookEntity {
 	}
 }
 
-func ToModel(b *BookEntity) *models.Book {
-	return &models.Book{
+func ToModel(b *BookEntity) *book.Book {
+	return &book.Book{
 		ID:          *b.ID,
 		Name:        b.Name,
 		Description: b.Description,

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kourin1996/go-crud-api-sample/api/models"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -18,20 +18,20 @@ type BookServiceMock struct {
 	mock.Mock
 }
 
-func (m *BookServiceMock) CreateBook(book *models.Book) (*models.Book, error) {
+func (m *BookServiceMock) CreateBook(book *book.Book) (*book.Book, error) {
 	ret := m.Called(book)
 	book.ID = 0
-	return ret.Get(0).(*models.Book), ret.Error(1)
+	return ret.Get(0).(*book.Book), ret.Error(1)
 }
 
-func (m *BookServiceMock) GetBook(id int) (*models.Book, error) {
+func (m *BookServiceMock) GetBook(id int) (*book.Book, error) {
 	ret := m.Called(id)
-	return ret.Get(0).(*models.Book), ret.Error(1)
+	return ret.Get(0).(*book.Book), ret.Error(1)
 }
 
-func (m *BookServiceMock) UpdateBook(id int, book *models.Book) (*models.Book, error) {
+func (m *BookServiceMock) UpdateBook(id int, book *book.Book) (*book.Book, error) {
 	ret := m.Called(id, book)
-	return ret.Get(0).(*models.Book), ret.Error(1)
+	return ret.Get(0).(*book.Book), ret.Error(1)
 }
 
 func (m *BookServiceMock) DeleteBook(id int) error {
@@ -51,7 +51,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 }
 
 func TestPostBook(t *testing.T) {
-	book := models.Book{
+	book := book.Book{
 		ID:          0,
 		Name:        "sensuikan1973",
 		Description: "Nice",
@@ -79,7 +79,7 @@ func TestPostBook(t *testing.T) {
 }
 
 func TestGetBook(t *testing.T) {
-	book := models.Book{
+	book := book.Book{
 		ID:          0,
 		Name:        "sensuikan1973",
 		Description: "Nice",
@@ -106,7 +106,7 @@ func TestGetBook(t *testing.T) {
 }
 
 func TestPutBook(t *testing.T) {
-	book := models.Book{
+	book := book.Book{
 		ID:          0,
 		Name:        "sensuikan1973",
 		Description: "Nice",
