@@ -34,14 +34,13 @@ func LoadConfig() (Config, error) {
 func main() {
 	config, err := LoadConfig()
 	if err != nil {
-		log.Fatalf("error happened: %s", err.Error())
+		log.Fatalf("error happened on loading config: %s", err.Error())
 		return
 	}
 
 	db := pg.NewDb(config.Db)
-
 	if err = controllers.Start(config.Api, db); err != nil {
-		log.Fatalf("error happened: %s", err.Error())
+		log.Fatalf("error happened on starting API: %s", err.Error())
 		return
 	}
 }

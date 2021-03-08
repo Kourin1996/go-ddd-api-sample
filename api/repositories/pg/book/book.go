@@ -1,6 +1,8 @@
 package book
 
 import (
+	"fmt"
+
 	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 	repositories "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg"
 	"github.com/go-pg/pg/v10"
@@ -36,9 +38,11 @@ func (r *BookRepository) GetBook(id int) (*book.Book, error) {
 
 func (r *BookRepository) UpdateBook(id int, book *book.Book) (*book.Book, error) {
 	entity := ToEntity(book)
-	entity.ID = &id
+	fmt.Printf("UpdateBook: %+v %s %d\n", book, book.Description, len(book.Description))
 
-	_, err := r.DB.Model(entity).WherePK().Returning("*").Update()
+	entity.ID = id
+
+	_, err := r.DB.Model(entity).WherePK().Returning("*").UpdateNotZero()
 	if err != nil {
 		return nil, err
 	}

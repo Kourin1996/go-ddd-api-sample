@@ -7,9 +7,9 @@ type PostBookDto struct {
 }
 
 type PutBookDto struct {
-	Name        string `validate:"min=1,max=255"`
-	Description string `validate:"max=1024"`
-	Price       int64  `validate:""`
+	Name        *string `validate:"min=1,max=255"`
+	Description *string `validate:"max=1024"`
+	Price       *int64  `validate:""`
 }
 
 type DeleteBookDto struct {

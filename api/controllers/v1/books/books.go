@@ -33,12 +33,12 @@ func (h *BookHandler) postBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book := &book.Book{
+	createBook := &book.CreateBookCommand{
 		Name:        dto.Name,
 		Description: dto.Description,
 		Price:       dto.Price,
 	}
-	book, err := h.bookService.CreateBook(book)
+	book, err := h.bookService.CreateBook(createBook)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -76,12 +76,8 @@ func (h *BookHandler) putBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book := &book.Book{
-		Name:        dto.Name,
-		Description: dto.Description,
-		Price:       dto.Price,
-	}
-	book, err = h.bookService.UpdateBook(id, book)
+	updateBook := (*book.UpdateBookCommand)(dto)
+	book, err := h.bookService.UpdateBook(id, updateBook)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}

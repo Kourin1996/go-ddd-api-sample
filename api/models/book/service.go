@@ -1,8 +1,8 @@
 package book
 
 type IBookService interface {
-	CreateBook(book *Book) (*Book, error)
-	GetBook(id int) (*Book, error)
-	UpdateBook(id int, book *Book) (*Book, error)
+	CreateBook(book *CreateBookCommand) (*BookResult, error)
+	GetBook(id int) (*BookResult, error)
+	UpdateBook(id int, book *UpdateBookCommand) (*BookResult, error)
 	DeleteBook(id int) error
 }
