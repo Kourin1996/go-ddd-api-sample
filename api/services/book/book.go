@@ -12,18 +12,18 @@ func NewBookService(bookRepo book.IBookRepository) book.IBookService {
 	return &BookService{bookRepo: bookRepo}
 }
 
-func (service *BookService) CreateBook(book *book.Book) (*book.Book, error) {
+func (service *BookService) CreateBook(book *book.CreateBookCommand) (*book.BookResult, error) {
 	return service.bookRepo.CreateBook(book)
 }
 
-func (service *BookService) GetBook(id int) (*book.Book, error) {
+func (service *BookService) GetBook(id int32) (*book.BookResult, error) {
 	return service.bookRepo.GetBook(id)
 }
 
-func (service *BookService) UpdateBook(id int, book *book.Book) (*book.Book, error) {
+func (service *BookService) UpdateBook(id int32, book *book.UpdateBookCommand) (*book.BookResult, error) {
 	return service.bookRepo.UpdateBook(id, book)
 }
 
-func (service *BookService) DeleteBook(id int) error {
+func (service *BookService) DeleteBook(id int32) error {
 	return service.bookRepo.DeleteBook(id)
 }

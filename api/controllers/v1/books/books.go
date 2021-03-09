@@ -1,6 +1,7 @@
 package books
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -32,12 +33,9 @@ func (h *BookHandler) postBook(c echo.Context) error {
 	if err := c.Validate(dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	fmt.Printf("CreateBookDto: %+v\n", dto)
 
-	createBook := &book.CreateBookCommand{
-		Name:        dto.Name,
-		Description: dto.Description,
-		Price:       dto.Price,
-	}
+	createBook := (*book.CreateBookCommand)(dto)
 	book, err := h.bookService.CreateBook(createBook)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -47,8 +45,8 @@ func (h *BookHandler) postBook(c echo.Context) error {
 }
 
 func (h *BookHandler) getBook(c echo.Context) error {
-	id := 0
-	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
+	var id int32
+	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
@@ -62,8 +60,8 @@ func (h *BookHandler) getBook(c echo.Context) error {
 }
 
 func (h *BookHandler) putBook(c echo.Context) error {
-	id := 0
-	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
+	var id int32 = 0
+	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
@@ -75,6 +73,7 @@ func (h *BookHandler) putBook(c echo.Context) error {
 	if err := c.Validate(dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+	fmt.Printf("PutBookDto: %+v\n", dto)
 
 	updateBook := (*book.UpdateBookCommand)(dto)
 	book, err := h.bookService.UpdateBook(id, updateBook)
@@ -86,8 +85,8 @@ func (h *BookHandler) putBook(c echo.Context) error {
 }
 
 func (h *BookHandler) deleteBook(c echo.Context) error {
-	id := 0
-	err := echo.PathParamsBinder(c).Int("id", &id).BindError()
+	var id int32 = 0
+	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}

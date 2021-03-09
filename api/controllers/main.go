@@ -18,7 +18,7 @@ type Config struct {
 
 func Start(config Config, db *pg.DB) error {
 	e := echo.New()
-	e.Pre(middleware.AddTrailingSlash())
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
