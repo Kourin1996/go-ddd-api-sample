@@ -2,7 +2,7 @@ package book
 
 import "time"
 
-type BookResult struct {
+type BookModel struct {
 	ID          int32     `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`

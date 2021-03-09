@@ -18,19 +18,19 @@ type BookServiceMock struct {
 	mock.Mock
 }
 
-func (m *BookServiceMock) CreateBook(command *book.CreateBookCommand) (*book.BookResult, error) {
+func (m *BookServiceMock) CreateBook(command *book.CreateBookCommand) (*book.BookModel, error) {
 	ret := m.Called(command)
-	return ret.Get(0).(*book.BookResult), ret.Error(1)
+	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
-func (m *BookServiceMock) GetBook(id int32) (*book.BookResult, error) {
+func (m *BookServiceMock) GetBook(id int32) (*book.BookModel, error) {
 	ret := m.Called(id)
-	return ret.Get(0).(*book.BookResult), ret.Error(1)
+	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
-func (m *BookServiceMock) UpdateBook(id int32, command *book.UpdateBookCommand) (*book.BookResult, error) {
+func (m *BookServiceMock) UpdateBook(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
 	ret := m.Called(id, command)
-	return ret.Get(0).(*book.BookResult), ret.Error(1)
+	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
 func (m *BookServiceMock) DeleteBook(id int32) error {
@@ -50,7 +50,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 }
 
 func TestPostBook(t *testing.T) {
-	book := book.BookResult{
+	book := book.BookModel{
 		Name:        "sensuikan1973",
 		Description: "Nice",
 		Price:       100,
@@ -77,7 +77,7 @@ func TestPostBook(t *testing.T) {
 }
 
 func TestGetBook(t *testing.T) {
-	book := book.BookResult{
+	book := book.BookModel{
 		Name:        "sensuikan1973",
 		Description: "Nice",
 		Price:       100,
@@ -103,7 +103,7 @@ func TestGetBook(t *testing.T) {
 }
 
 func TestPutBook(t *testing.T) {
-	book := book.BookResult{
+	book := book.BookModel{
 		ID:          0,
 		Name:        "sensuikan1973",
 		Description: "Nice",

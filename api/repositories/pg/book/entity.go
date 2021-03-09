@@ -36,8 +36,8 @@ func ToEntityFromUpdateBookCommand(ID int32, command *book.UpdateBookCommand) *B
 	}
 }
 
-func ToBookResult(entity *BookEntity) *book.BookResult {
-	return &book.BookResult{
+func ToBookModel(entity *BookEntity) *book.BookModel {
+	return &book.BookModel{
 		ID:          entity.ID,
 		Name:        *entity.Name,
 		Description: *entity.Description,
