@@ -16,7 +16,7 @@ func NewRepository(db *pg.DB) book.IBookRepository {
 	return &BookRepository{repositories.Repository{DB: db}}
 }
 
-func (r *BookRepository) CreateBook(command *book.CreateBookCommand) (*book.BookModel, error) {
+func (r *BookRepository) Create(command *book.CreateBookCommand) (*book.BookModel, error) {
 	entity := ToEntityFromCreateBookCommand(command)
 
 	fmt.Printf("CreateBook: %+v\n", entity)
@@ -29,7 +29,7 @@ func (r *BookRepository) CreateBook(command *book.CreateBookCommand) (*book.Book
 	return ToBookModel(entity), nil
 }
 
-func (r *BookRepository) GetBook(id int32) (*book.BookModel, error) {
+func (r *BookRepository) Get(id int32) (*book.BookModel, error) {
 	entity := new(BookEntity)
 
 	err := r.DB.Model(entity).Where("id = ?", id).Limit(1).Select()
@@ -40,7 +40,7 @@ func (r *BookRepository) GetBook(id int32) (*book.BookModel, error) {
 	return ToBookModel(entity), nil
 }
 
-func (r *BookRepository) UpdateBook(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
+func (r *BookRepository) Update(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
 	entity := ToEntityFromUpdateBookCommand(id, command)
 
 	fmt.Printf("UpdateBook: %+v\n", entity)
@@ -53,7 +53,7 @@ func (r *BookRepository) UpdateBook(id int32, command *book.UpdateBookCommand) (
 	return ToBookModel(entity), nil
 }
 
-func (r *BookRepository) DeleteBook(id int32) error {
+func (r *BookRepository) Delete(id int32) error {
 	_, err := r.DB.Model(&BookEntity{}).Where("id = ?", id).Delete()
 	return err
 }

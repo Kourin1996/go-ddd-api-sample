@@ -1,19 +1,8 @@
 package user
 
-type UserRegisterCommandParameter struct {
-}
+import "github.com/Kourin1996/go-crud-api-sample/api/models/common"
 
-type UserRegisterCommandResult struct {
-}
-
-type UserUpdateCommandParameter struct {
-}
-
-type UserUpdateCommandResult struct {
-}
-
-type UserDeleteCommandParameter struct {
-}
-
-type UserDeleteCommandResult struct {
+type CreateUserCommand struct {
+	Username string          `json:"username"`
+	Password common.Password `json:"-"`
 }

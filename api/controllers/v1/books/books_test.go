@@ -18,22 +18,22 @@ type BookServiceMock struct {
 	mock.Mock
 }
 
-func (m *BookServiceMock) CreateBook(command *book.CreateBookCommand) (*book.BookModel, error) {
+func (m *BookServiceMock) Create(command *book.CreateBookCommand) (*book.BookModel, error) {
 	ret := m.Called(command)
 	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
-func (m *BookServiceMock) GetBook(id int32) (*book.BookModel, error) {
+func (m *BookServiceMock) Get(id int32) (*book.BookModel, error) {
 	ret := m.Called(id)
 	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
-func (m *BookServiceMock) UpdateBook(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
+func (m *BookServiceMock) Update(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
 	ret := m.Called(id, command)
 	return ret.Get(0).(*book.BookModel), ret.Error(1)
 }
 
-func (m *BookServiceMock) DeleteBook(id int32) error {
+func (m *BookServiceMock) Delete(id int32) error {
 	ret := m.Called(id)
 	return ret.Error(0)
 }
@@ -67,7 +67,7 @@ func TestPostBook(t *testing.T) {
 
 	g := e.Group("/v1/books")
 	mockService := &BookServiceMock{}
-	mockService.On("CreateBook", &book).Return(&book, nil)
+	mockService.On("Create", &book).Return(&book, nil)
 	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.postBook(c)) {
@@ -76,7 +76,7 @@ func TestPostBook(t *testing.T) {
 	}
 }
 
-func TestGetBook(t *testing.T) {
+func TestGet(t *testing.T) {
 	book := book.BookModel{
 		Name:        "sensuikan1973",
 		Description: "Nice",
@@ -93,10 +93,10 @@ func TestGetBook(t *testing.T) {
 
 	g := e.Group("/v1/books")
 	mockService := &BookServiceMock{}
-	mockService.On("GetBook", book.ID).Return(&book, nil)
+	mockService.On("Get", book.ID).Return(&book, nil)
 	h := NewBookHandler(g, mockService)
 
-	if assert.NoError(t, h.getBook(c)) {
+	if assert.NoError(t, h.Get(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.JSONEq(t, bookJson, rec.Body.String())
 	}
@@ -121,7 +121,7 @@ func TestPutBook(t *testing.T) {
 
 	g := e.Group("/v1/books")
 	mockService := &BookServiceMock{}
-	mockService.On("UpdateBook", book.ID, &book).Return(&book, nil)
+	mockService.On("Update", book.ID, &book).Return(&book, nil)
 	h := NewBookHandler(g, mockService)
 
 	if assert.NoError(t, h.putBook(c)) {
@@ -130,7 +130,7 @@ func TestPutBook(t *testing.T) {
 	}
 }
 
-func TestDeleteBook(t *testing.T) {
+func TestDelete(t *testing.T) {
 	id := 0
 
 	e := echo.New()
@@ -142,10 +142,10 @@ func TestDeleteBook(t *testing.T) {
 
 	g := e.Group("/v1/books")
 	mockService := &BookServiceMock{}
-	mockService.On("DeleteBook", id).Return(nil)
+	mockService.On("Delete", id).Return(nil)
 	h := NewBookHandler(g, mockService)
 
-	if assert.NoError(t, h.deleteBook(c)) {
+	if assert.NoError(t, h.Delete(c)) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Equal(t, "", rec.Body.String())
 	}

@@ -1,8 +1,8 @@
 package book
 
 type IBookRepository interface {
-	CreateBook(*CreateBookCommand) (*BookModel, error)
-	GetBook(int32) (*BookModel, error)
-	UpdateBook(int32, *UpdateBookCommand) (*BookModel, error)
-	DeleteBook(int32) error
+	Create(*CreateBookCommand) (*BookModel, error)
+	Get(int32) (*BookModel, error)
+	Update(int32, *UpdateBookCommand) (*BookModel, error)
+	Delete(int32) error
 }

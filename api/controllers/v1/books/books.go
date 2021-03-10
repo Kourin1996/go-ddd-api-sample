@@ -17,15 +17,15 @@ func NewBookHandler(g *echo.Group, bookService book.IBookService) *BookHandler {
 	handler := &BookHandler{bookService: bookService}
 
 	group := g.Group("/books")
-	group.POST("/", handler.postBook)
-	group.GET("/:id", handler.getBook)
-	group.PUT("/:id", handler.putBook)
-	group.DELETE("/:id", handler.deleteBook)
+	group.POST("/", handler.PostBook)
+	group.GET("/:id", handler.GetBook)
+	group.PUT("/:id", handler.PutBook)
+	group.DELETE("/:id", handler.DeleteBook)
 
 	return handler
 }
 
-func (h *BookHandler) postBook(c echo.Context) error {
+func (h *BookHandler) PostBook(c echo.Context) error {
 	dto := new(PostBookDto)
 	if err := c.Bind(dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -36,7 +36,7 @@ func (h *BookHandler) postBook(c echo.Context) error {
 	fmt.Printf("CreateBookDto: %+v\n", dto)
 
 	createBook := (*book.CreateBookCommand)(dto)
-	book, err := h.bookService.CreateBook(createBook)
+	book, err := h.bookService.Create(createBook)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -44,14 +44,14 @@ func (h *BookHandler) postBook(c echo.Context) error {
 	return c.JSON(http.StatusCreated, *book)
 }
 
-func (h *BookHandler) getBook(c echo.Context) error {
+func (h *BookHandler) GetBook(c echo.Context) error {
 	var id int32
 	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	book, err := h.bookService.GetBook(id)
+	book, err := h.bookService.Get(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -59,7 +59,7 @@ func (h *BookHandler) getBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, *book)
 }
 
-func (h *BookHandler) putBook(c echo.Context) error {
+func (h *BookHandler) PutBook(c echo.Context) error {
 	var id int32 = 0
 	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
@@ -76,7 +76,7 @@ func (h *BookHandler) putBook(c echo.Context) error {
 	fmt.Printf("PutBookDto: %+v\n", dto)
 
 	updateBook := (*book.UpdateBookCommand)(dto)
-	book, err := h.bookService.UpdateBook(id, updateBook)
+	book, err := h.bookService.Update(id, updateBook)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
@@ -84,14 +84,14 @@ func (h *BookHandler) putBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, *book)
 }
 
-func (h *BookHandler) deleteBook(c echo.Context) error {
+func (h *BookHandler) DeleteBook(c echo.Context) error {
 	var id int32 = 0
 	err := echo.PathParamsBinder(c).Int32("id", &id).BindError()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "ID is not valid")
 	}
 
-	err = h.bookService.DeleteBook(id)
+	err = h.bookService.Delete(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
