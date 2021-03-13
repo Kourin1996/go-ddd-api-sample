@@ -1,11 +1,11 @@
 package auth
 
-type SignUpCommand struct {
+type SignUpDto struct {
 	Username string
 	Password string
 }
 
-type SignInCommand struct {
+type SignInDto struct {
 	Username string
 	Password string
 }

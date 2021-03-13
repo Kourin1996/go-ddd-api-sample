@@ -16,44 +16,45 @@ func NewRepository(db *pg.DB) book.IBookRepository {
 	return &BookRepository{repositories.Repository{DB: db}}
 }
 
-func (r *BookRepository) Create(command *book.CreateBookCommand) (*book.BookModel, error) {
-	entity := ToEntityFromCreateBookCommand(command)
-
-	fmt.Printf("CreateBook: %+v\n", entity)
-	_, err := r.DB.Model(entity).Returning("*").Insert()
+func (r *BookRepository) Create(book *book.Book) (*book.Book, error) {
+	fmt.Printf("Create Book: %+v\n", book)
+	_, err := r.DB.Model(book).Returning("*").Insert()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Res CreateBook: %+v\n", entity)
+	fmt.Printf("Created Book: %+v\n", book)
 
-	return ToBookModel(entity), nil
+	return book, nil
 }
 
-func (r *BookRepository) Get(id int32) (*book.BookModel, error) {
-	entity := new(BookEntity)
+func (r *BookRepository) Get(id int64) (*book.Book, error) {
+	book := book.NewEmptyBook()
 
-	err := r.DB.Model(entity).Where("id = ?", id).Limit(1).Select()
+	err := r.DB.Model(book).Where("id = ?", id).Limit(1).Select()
 	if err != nil {
 		return nil, err
 	}
 
-	return ToBookModel(entity), nil
+	fmt.Printf("Got Book: %d %+v\n", id, book)
+
+	return book, nil
 }
 
-func (r *BookRepository) Update(id int32, command *book.UpdateBookCommand) (*book.BookModel, error) {
-	entity := ToEntityFromUpdateBookCommand(id, command)
+func (r *BookRepository) Update(id int64, updateBook *book.UpdateBook) (*book.Book, error) {
+	book := book.NewEmptyBook()
 
-	fmt.Printf("UpdateBook: %+v\n", entity)
-	_, err := r.DB.Model(entity).WherePK().Returning("*").UpdateNotZero()
+	fmt.Printf("UpdateBook: %+v %+v\n", updateBook, book)
+	_, err := r.DB.Model(updateBook).Where("id = ?", id).Returning("*").UpdateNotZero(book)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("Res UpdateBook: %+v\n", entity)
+	fmt.Printf("Res UpdatedBook: %+v\n", book)
 
-	return ToBookModel(entity), nil
+	return book, nil
 }
 
-func (r *BookRepository) Delete(id int32) error {
-	_, err := r.DB.Model(&BookEntity{}).Where("id = ?", id).Delete()
+func (r *BookRepository) Delete(id int64) error {
+	fmt.Printf("Delete: %d\n", id)
+	_, err := r.DB.Model(&book.Book{}).Where("id = ?", id).Delete()
 	return err
 }

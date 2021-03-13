@@ -13,10 +13,10 @@ func NewAuthService(userRepo user.IUserRepository) auth.IAuthService {
 	return &AuthService{userRepo: userRepo}
 }
 
-func (s *AuthService) SignUp(command *auth.SignUpCommand) (*user.UserModel, error) {
+func (s *AuthService) SignUp(dto *auth.SignUpDto) (*auth.AuthResult, error) {
 	return nil, nil
 }
 
-func (s *AuthService) SignIn(command *auth.SignInCommand) (*user.UserModel, error) {
+func (s *AuthService) SignIn(dto *auth.SignInDto) (*auth.AuthResult, error) {
 	return nil, nil
 }

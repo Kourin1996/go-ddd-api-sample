@@ -13,15 +13,15 @@ func newHashIDObject(key, salt string, length int) (*hashids.HashID, error) {
 	return hashids.NewWithData(hd)
 }
 
-func EncodeHashID(id int, key string, salt string, length int) (string, error) {
+func EncodeHashID(id int64, key string, salt string, length int) (string, error) {
 	h, err := newHashIDObject(key, salt, length)
 	if err != nil {
 		return "", err
 	}
-	return h.Encode([]int{id})
+	return h.Encode([]int{int(id)})
 }
 
-func DecodeHashID(hashId string, key string, salt string, length int) (int, error) {
+func DecodeHashID(hashId string, key string, salt string, length int) (int64, error) {
 	h, err := newHashIDObject(key, salt, length)
 	if err != nil {
 		return 0, err
@@ -30,5 +30,5 @@ func DecodeHashID(hashId string, key string, salt string, length int) (int, erro
 	if len(res) == 0 {
 		return 0, fmt.Errorf("Failed to decode hash id")
 	}
-	return res[0], nil
+	return int64(res[0]), nil
 }
