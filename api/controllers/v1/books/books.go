@@ -8,6 +8,8 @@ import (
 	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 )
 
+const BASE_PATH = "/books"
+
 type BookHandler struct {
 	bookService book.IBookService
 }
@@ -15,7 +17,7 @@ type BookHandler struct {
 func NewBookHandler(g *echo.Group, bookService book.IBookService) *BookHandler {
 	handler := &BookHandler{bookService: bookService}
 
-	group := g.Group("/books")
+	group := g.Group(BASE_PATH)
 	group.POST("", handler.PostBook)
 	group.GET("/:hash_id", handler.GetBook)
 	group.PUT("/:hash_id", handler.PutBook)

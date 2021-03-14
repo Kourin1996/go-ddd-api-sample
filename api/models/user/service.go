@@ -1,7 +1,7 @@
 package user
 
-type IUserRepository interface {
+type IUserService interface {
 	Create(*User) (*User, error)
-	Get(int64) (*User, error)
+	GetByHashId(string) (*User, error)
 	GetByUsername(string) (*User, error)
 }

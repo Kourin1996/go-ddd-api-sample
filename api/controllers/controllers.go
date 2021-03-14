@@ -7,9 +7,13 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
-	"github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/books"
+	AuthController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/auth"
+	BooksController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/books"
 	BookRepository "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg/book"
+	UserRepository "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg/user"
+	AuthService "github.com/Kourin1996/go-crud-api-sample/api/services/auth"
 	BookService "github.com/Kourin1996/go-crud-api-sample/api/services/book"
+	UserService "github.com/Kourin1996/go-crud-api-sample/api/services/user"
 )
 
 type Config struct {
@@ -28,7 +32,12 @@ func Start(config Config, db *pg.DB) error {
 
 	bookRepo := BookRepository.NewRepository(db)
 	bookService := BookService.NewBookService(bookRepo)
-	books.NewBookHandler(g, bookService)
+	userRepo := UserRepository.NewUserRepository(db)
+	userService := UserService.NewUserService(userRepo)
+	authService := AuthService.NewAuthService(userService)
+
+	BooksController.NewBookHandler(g, bookService)
+	AuthController.NewAuthController(g, authService)
 
 	e.Logger.Fatal(e.Start(config.Address))
 
