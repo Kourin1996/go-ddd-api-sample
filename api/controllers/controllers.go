@@ -9,6 +9,7 @@ import (
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
 	AuthController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/auth"
 	BooksController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/books"
+	MeController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/me"
 	BookRepository "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg/book"
 	UserRepository "github.com/Kourin1996/go-crud-api-sample/api/repositories/pg/user"
 	AuthService "github.com/Kourin1996/go-crud-api-sample/api/services/auth"
@@ -38,6 +39,7 @@ func Start(config Config, db *pg.DB) error {
 
 	BooksController.NewBookHandler(g, bookService)
 	AuthController.NewAuthController(g, authService)
+	MeController.NewMeController(g, userService)
 
 	e.Logger.Fatal(e.Start(config.Address))
 

@@ -29,9 +29,7 @@ func NewAuthService(userService user.IUserService) auth.IAuthService {
 }
 
 func (s *AuthService) SignUp(dto *auth.SignUpDto) (*auth.AuthResult, error) {
-	fmt.Printf("AuthService::SignUp dto => %+v\n", dto)
 	currentUser, err := s.userService.GetByUsername(dto.Username)
-	fmt.Printf("AuthService::SignUp currentUser, error => %+v, %+v\n", currentUser, err)
 	if err != nil {
 		return nil, err
 	}
@@ -40,18 +38,15 @@ func (s *AuthService) SignUp(dto *auth.SignUpDto) (*auth.AuthResult, error) {
 	}
 
 	newUser, err := user.NewUser(dto.Username, dto.Password)
-	fmt.Printf("AuthService::SignUp newUser, error => %+v, %+v\n", newUser, err)
 	if err != nil {
 		return nil, err
 	}
 
 	newUser, err = s.userService.Create(newUser)
-	fmt.Printf("AuthService::SignUp newUser, error => %+v, %+v\n", newUser, err)
 	if err != nil {
 		return nil, err
 	}
 	token, err := createJWT(newUser)
-	fmt.Printf("AuthService::SignUp token, error => %s, %+v\n", token, err)
 	if err != nil {
 		return nil, err
 	}
