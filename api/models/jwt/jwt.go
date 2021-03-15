@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/constants"
@@ -24,9 +25,9 @@ func EncodeJWTToken(u *user.User) (string, error) {
 }
 
 func DecodeJWTToken(token *jwt.Token) *TokenData {
+	fmt.Printf("DecodeJWTToken %+v\n", token)
 	claims := token.Claims.(jwt.MapClaims)
 	hashId := claims["hash_id"].(string)
-	exp := claims["exp"].(int64)
 
-	return &TokenData{HashId: hashId, Exp: exp}
+	return &TokenData{HashId: hashId}
 }

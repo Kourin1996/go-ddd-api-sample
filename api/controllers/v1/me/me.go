@@ -27,9 +27,9 @@ func NewMeController(group *echo.Group, userService user.IUserService) *MeContro
 }
 
 func (c *MeController) GetMe(ctx echo.Context) error {
-	data := jwtToken.DecodeJWTToken(ctx.Get("user").(*jwt.Token))
+	tokenData := jwtToken.DecodeJWTToken(ctx.Get("user").(*jwt.Token))
 
-	me, err := c.userService.GetByHashId(data.HashId)
+	me, err := c.userService.GetByHashId(tokenData.HashId)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

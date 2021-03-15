@@ -28,7 +28,7 @@ func (r *BookRepository) Create(book *book.Book) (*book.Book, error) {
 func (r *BookRepository) Get(id int64) (*book.Book, error) {
 	book := book.NewEmptyBook()
 
-	err := r.DB.Model(book).Where("id = ?", id).Limit(1).Select()
+	err := r.DB.Model(book).Column("book.*").Relation("User").Where("book.id = ?", id).Limit(1).Select()
 	if errors.Is(pg.ErrNoRows, err) {
 		return nil, nil
 	}
