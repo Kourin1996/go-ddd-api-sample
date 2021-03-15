@@ -14,7 +14,7 @@ type Book struct {
 	Description string     `json:"description" pg:"description"`
 	Price       int64      `json:"price" pg:"price"`
 	UserId      int64      `json:"-" pg:"user_id"`
-	User        *user.User `json:"user" pg:"rel:has-one"`
+	User        *user.User `json:"user,omitempty" pg:"rel:has-one"`
 }
 
 func NewEmptyBook() *Book {
