@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/controllers/middleware"
+	jwtToken "github.com/Kourin1996/go-crud-api-sample/api/models/jwt"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
@@ -26,11 +27,9 @@ func NewMeController(group *echo.Group, userService user.IUserService) *MeContro
 }
 
 func (c *MeController) GetMe(ctx echo.Context) error {
-	userToken := ctx.Get("user").(*jwt.Token)
-	claims := userToken.Claims.(jwt.MapClaims)
-	hashId := claims["hash_id"].(string)
+	data := jwtToken.DecodeJWTToken(ctx.Get("user").(*jwt.Token))
 
-	me, err := c.userService.GetByHashId(hashId)
+	me, err := c.userService.GetByHashId(data.HashId)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
