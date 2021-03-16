@@ -39,6 +39,23 @@ func (r *BookRepository) Get(id int64) (*book.Book, error) {
 	return book, nil
 }
 
+func (r *BookRepository) GetBooks(query *book.GetBookQuery) ([]*book.Book, error) {
+	books := make([]*book.Book, query.Limit)
+	for i, _ := range books {
+		books[i] = book.NewEmptyBook()
+	}
+
+	err := r.DB.Model(&books).Column("book.*").Relation("User").Offset(query.Offset).Limit(query.Limit).Select()
+	if errors.Is(pg.ErrNoRows, err) {
+		return []*book.Book{}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return books, nil
+}
+
 func (r *BookRepository) Update(id int64, updateBook *book.UpdateBook) (*book.Book, error) {
 	book := book.NewEmptyBook()
 

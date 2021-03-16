@@ -3,6 +3,7 @@ package books
 import (
 	"net/http"
 
+	"github.com/Kourin1996/go-crud-api-sample/api/common"
 	"github.com/Kourin1996/go-crud-api-sample/api/controllers/middleware"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
 	jwtToken "github.com/Kourin1996/go-crud-api-sample/api/models/jwt"
@@ -19,16 +20,31 @@ type BookHandler struct {
 func NewBookHandler(g *echo.Group, bookService book.IBookService) *BookHandler {
 	handler := &BookHandler{bookService: bookService}
 
-	publicGroup := g.Group(BASE_PATH)
-	publicGroup.GET("/:hash_id", handler.GetBook)
-
 	privateGroup := g.Group(BASE_PATH)
 	privateGroup.Use(middleware.NewJwt())
 	privateGroup.POST("", handler.PostBook)
 	privateGroup.PUT("/:hash_id", handler.PutBook)
 	privateGroup.DELETE("/:hash_id", handler.DeleteBook)
 
+	publicGroup := g.Group(BASE_PATH)
+	publicGroup.GET("", handler.GetBooks)
+	publicGroup.GET("/:hash_id", handler.GetBook)
+
 	return handler
+}
+
+func (h *BookHandler) GetBooks(c echo.Context) error {
+	dto := &book.GetBooksDto{}
+	if err := common.BindAndValidate(c, dto); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	res, err := h.bookService.GetBooks(dto)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 
 func (h *BookHandler) GetBook(c echo.Context) error {
@@ -50,10 +66,7 @@ func (h *BookHandler) PostBook(c echo.Context) error {
 	tokenData := jwtToken.DecodeJWTToken(c.Get("user").(*jwt.Token))
 
 	dto := &book.CreateBookDto{}
-	if err := c.Bind(dto); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	if err := c.Validate(dto); err != nil {
+	if err := common.BindAndValidate(c, dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
@@ -75,10 +88,7 @@ func (h *BookHandler) PutBook(c echo.Context) error {
 	}
 
 	dto := &book.UpdateBookDto{}
-	if err := c.Bind(dto); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	if err := c.Validate(dto); err != nil {
+	if err := common.BindAndValidate(c, dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 

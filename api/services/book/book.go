@@ -18,11 +18,23 @@ func NewBookService(bookRepo book.IBookRepository) book.IBookService {
 	return &BookService{bookRepo: bookRepo}
 }
 
-func (service *BookService) Get(hashId string) (*book.Book, error) {
+func (s *BookService) Get(hashId string) (*book.Book, error) {
 	b := book.NewEmptyBook()
 	b.SetHashId(hashId)
 
-	return service.bookRepo.Get(b.ID)
+	return s.bookRepo.Get(b.ID)
+}
+
+func (s *BookService) GetBooks(dto *book.GetBooksDto) ([]*book.Book, error) {
+	query := &book.GetBookQuery{Offset: 0, Limit: 10}
+	if dto.Number != nil {
+		query.Limit = *dto.Number
+	}
+	if dto.Page != nil && (*dto.Page) >= 1 {
+		query.Offset = query.Limit * (*dto.Page - 1)
+	}
+
+	return s.bookRepo.GetBooks(query)
 }
 
 func (s *BookService) Create(tokenData *jwt.TokenData, dto *book.CreateBookDto) (*book.Book, error) {
