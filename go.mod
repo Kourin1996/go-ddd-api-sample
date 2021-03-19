@@ -7,6 +7,7 @@ require (
 	github.com/go-pg/pg/v10 v10.7.7
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.4.1
+	github.com/gobuffalo/logger v1.0.3
 	github.com/google/uuid v1.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo v3.3.10+incompatible
