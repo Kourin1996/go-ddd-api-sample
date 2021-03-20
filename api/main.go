@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
+	"github.com/Kourin1996/go-crud-api-sample/api/common/log"
 	"github.com/Kourin1996/go-crud-api-sample/api/controllers"
 	"github.com/Kourin1996/go-crud-api-sample/api/repositories/pg"
 	gopg "github.com/go-pg/pg/v10"
@@ -35,19 +35,17 @@ func LoadConfig() (Config, error) {
 	return config, err
 }
 
-type dbLogger struct {
-	logger common.Logger
-}
+type dbLogger struct{}
 
 func (d dbLogger) BeforeQuery(c context.Context, q *gopg.QueryEvent) (context.Context, error) {
+	query, err := q.FormattedQuery()
+	if err == nil {
+		log.Debug(string(query))
+	}
 	return c, nil
 }
 
 func (d dbLogger) AfterQuery(c context.Context, q *gopg.QueryEvent) error {
-	query, err := q.FormattedQuery()
-	if err == nil {
-		d.logger.Debug(string(query))
-	}
 	return nil
 }
 
@@ -57,24 +55,25 @@ func main() {
 		fmt.Println("error")
 	}
 
-	loggerOptions := []*common.LoggerOption{
+	loggerOptions := []*log.LoggerOption{
 		{
 			Prefix: "Debug",
-			Level:  common.DEBUG,
+			Level:  log.DEBUG,
 			Header: "[Debug]",
 		},
 		{
 			Prefix: "Error",
-			Level:  common.ERROR,
+			Level:  log.ERROR,
 			Header: "[Error]",
 			Output: errorLogFile,
 		},
 	}
-	logger := common.NewLabstackLogger(loggerOptions...)
+	logger := log.NewLoggerManager(loggerOptions...)
+	log.SetGlobalLogger(logger)
 
-	logger.Print("test")
-	logger.Debugf("This is debug test 1+1=%d", 1+1)
-	logger.Errorj(map[string]interface{}{
+	log.Print("test")
+	log.Debugf("This is debug test 1+1=%d", 1+1)
+	log.Errorj(map[string]interface{}{
 		"Msg":   "This is error test",
 		"Hello": "World",
 	})
@@ -86,9 +85,7 @@ func main() {
 	}
 
 	db := pg.NewDb(config.Db)
-
-	dbl := dbLogger{logger: logger}
-	db.AddQueryHook(dbl)
+	db.AddQueryHook(&dbLogger{})
 
 	if err = controllers.Start(config.Api, db); err != nil {
 		log.Fatalf("error happened on starting API: %s", err.Error())
