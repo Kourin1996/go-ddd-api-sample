@@ -23,6 +23,14 @@ func NewEmptyBook() *Book {
 	return b
 }
 
+func NewBook(dto *CreateBookDto) (*Book, error) {
+	b := NewEmptyBook()
+	b.Name = dto.Name
+	b.Description = dto.Description
+	b.Price = dto.Price
+	return b, nil
+}
+
 type UpdateBook struct {
 	tableName struct{} `pg:"books"`
 	common.BaseModel
