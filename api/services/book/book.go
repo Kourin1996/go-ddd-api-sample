@@ -20,7 +20,9 @@ func NewBookService(bookRepo book.IBookRepository) book.IBookService {
 
 func (s *BookService) Get(hashId string) (*book.Book, error) {
 	b := book.NewEmptyBook()
-	b.SetHashId(hashId)
+	if err := b.SetHashId(hashId); err != nil {
+		return nil, err
+	}
 
 	return s.bookRepo.Get(b.ID)
 }
