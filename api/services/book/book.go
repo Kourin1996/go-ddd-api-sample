@@ -44,13 +44,10 @@ func (s *BookService) Create(tokenData *jwt.TokenData, dto *book.CreateBookDto) 
 	if err != nil {
 		return nil, err
 	}
-
-	book := book.NewEmptyBook()
-	book.Name = dto.Name
-	book.Description = dto.Description
-	book.Price = dto.Price
-	book.UserId = userId
-
+	book, err := book.NewBook(userId, dto)
+	if err != nil {
+		return nil, err
+	}
 	return s.bookRepo.Create(book)
 }
 
@@ -60,11 +57,10 @@ func (s *BookService) Update(tokenData *jwt.TokenData, hashId string, dto *book.
 		return nil, err
 	}
 
-	book := book.NewEmptyUpdateBook()
-	book.SetHashId(hashId)
-	book.Name = dto.Name
-	book.Description = dto.Description
-	book.Price = dto.Price
+	book, err := book.NewUpdateBook(hashId, dto)
+	if err != nil {
+		return nil, err
+	}
 
 	b, err := s.bookRepo.Get(book.ID)
 	if err != nil {

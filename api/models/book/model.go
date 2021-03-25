@@ -23,8 +23,9 @@ func NewEmptyBook() *Book {
 	return b
 }
 
-func NewBook(dto *CreateBookDto) (*Book, error) {
+func NewBook(userId int64, dto *CreateBookDto) (*Book, error) {
 	b := NewEmptyBook()
+	b.UserId = userId
 	b.Name = dto.Name
 	b.Description = dto.Description
 	b.Price = dto.Price
@@ -43,4 +44,15 @@ func NewEmptyUpdateBook() *UpdateBook {
 	b := &UpdateBook{}
 	b.Model = MODEL_NAME
 	return b
+}
+
+func NewUpdateBook(hashId string, dto *UpdateBookDto) (*UpdateBook, error) {
+	b := NewEmptyUpdateBook()
+	if err := b.SetHashId(hashId); err != nil {
+		return nil, err
+	}
+	b.Name = dto.Name
+	b.Description = dto.Description
+	b.Price = dto.Price
+	return b, nil
 }
