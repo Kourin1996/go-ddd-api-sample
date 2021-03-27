@@ -10,7 +10,7 @@ func NewFakeBookWithId(id int64, name string, description string, price int64, c
 	ca, _ := time.Parse(time.RFC3339, createdAt)
 	ua, _ := time.Parse(time.RFC3339, updatedAt)
 
-	b, _ := book.NewBook(&book.CreateBookDto{
+	b, _ := book.NewBook(id, &book.CreateBookDto{
 		Name:        name,
 		Description: description,
 		Price:       price,

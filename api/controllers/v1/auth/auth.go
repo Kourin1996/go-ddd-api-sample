@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
-	"github.com/Kourin1996/go-crud-api-sample/api/controllers/apierror"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/auth"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/errors"
 	"github.com/labstack/echo/v4"
 )
 
@@ -28,12 +28,12 @@ func NewAuthController(group *echo.Group, authService auth.IAuthService) *AuthCo
 func (c *AuthController) SignUp(ctx echo.Context) error {
 	dto := &auth.SignUpDto{}
 	if err := common.BindAndValidate(ctx, dto); err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, err.Error())
+		return errors.NewInvalidRequestError(err)
 	}
 
 	res, err := c.authService.SignUp(dto)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return ctx.JSON(http.StatusOK, res)
@@ -42,12 +42,12 @@ func (c *AuthController) SignUp(ctx echo.Context) error {
 func (c *AuthController) SignIn(ctx echo.Context) error {
 	dto := &auth.SignInDto{}
 	if err := common.BindAndValidate(ctx, dto); err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, err.Error())
+		return errors.NewInvalidRequestError(err)
 	}
 
 	res, err := c.authService.SignIn(dto)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return ctx.JSON(http.StatusOK, res)

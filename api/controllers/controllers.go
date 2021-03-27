@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
-	"github.com/Kourin1996/go-crud-api-sample/api/controllers/apierror"
 	AuthController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/auth"
 	BooksController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/books"
 	MeController "github.com/Kourin1996/go-crud-api-sample/api/controllers/v1/me"
@@ -20,15 +19,16 @@ import (
 
 type Config struct {
 	Address string
+	IsDebug bool
 }
 
-func Start(config Config, db *pg.DB) error {
+func Start(cfg Config, db *pg.DB) error {
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.HTTPErrorHandler = apierror.ApiErrorHandler
+	e.HTTPErrorHandler = NewHTTPErrorHandler(cfg)
 	e.Validator = common.NewCustomValidator()
 
 	g := e.Group("/v1")
@@ -43,7 +43,7 @@ func Start(config Config, db *pg.DB) error {
 	AuthController.NewAuthController(g, authService)
 	MeController.NewMeController(g, userService)
 
-	e.Logger.Fatal(e.Start(config.Address))
+	e.Logger.Fatal(e.Start(cfg.Address))
 
 	return nil
 }

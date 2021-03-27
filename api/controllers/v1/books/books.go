@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
-	"github.com/Kourin1996/go-crud-api-sample/api/controllers/apierror"
 	"github.com/Kourin1996/go-crud-api-sample/api/controllers/middleware"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/errors"
 	jwtToken "github.com/Kourin1996/go-crud-api-sample/api/models/jwt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
@@ -37,12 +37,12 @@ func NewBookHandler(g *echo.Group, bookService book.IBookService) *BookHandler {
 func (h *BookHandler) GetBooks(c echo.Context) error {
 	dto := &book.GetBooksDto{}
 	if err := common.BindAndValidate(c, dto); err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, err.Error())
+		return errors.NewInvalidRequestError(err)
 	}
 
 	res, err := h.bookService.GetBooks(dto)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusOK, res)
@@ -52,15 +52,12 @@ func (h *BookHandler) GetBook(c echo.Context) error {
 	var hashId string
 	err := echo.PathParamsBinder(c).String("hash_id", &hashId).BindError()
 	if err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, "Hash ID is required")
+		return errors.NewInvalidRequestError(err)
 	}
 
 	book, err := h.bookService.Get(hashId)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
-	}
-	if book == nil {
-		return apierror.NewApiError(http.StatusNotFound, apierror.ERROR_NOT_FOUND, "Book not found")
+		return err
 	}
 
 	return c.JSON(http.StatusOK, book)
@@ -71,12 +68,12 @@ func (h *BookHandler) PostBook(c echo.Context) error {
 
 	dto := &book.CreateBookDto{}
 	if err := common.BindAndValidate(c, dto); err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, err.Error())
+		return errors.NewInvalidRequestError(err)
 	}
 
 	book, err := h.bookService.Create(tokenData, dto)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusCreated, book)
@@ -88,17 +85,17 @@ func (h *BookHandler) PutBook(c echo.Context) error {
 	var hashId string
 	err := echo.PathParamsBinder(c).String("hash_id", &hashId).BindError()
 	if err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, "Hash ID is required")
+		return errors.NewInvalidRequestError(err)
 	}
 
 	dto := &book.UpdateBookDto{}
 	if err := common.BindAndValidate(c, dto); err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, err.Error())
+		return errors.NewInvalidRequestError(err)
 	}
 
 	book, err := h.bookService.Update(tokenData, hashId, dto)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return c.JSON(http.StatusOK, book)
@@ -110,12 +107,12 @@ func (h *BookHandler) DeleteBook(c echo.Context) error {
 	var hashId string
 	err := echo.PathParamsBinder(c).String("hash_id", &hashId).BindError()
 	if err != nil {
-		return apierror.NewApiError(http.StatusBadRequest, apierror.ERROR_VALIDATION, "Hash ID is required")
+		return errors.NewInvalidRequestError(err)
 	}
 
 	err = h.bookService.Delete(tokenData, hashId)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_INTERNAL_ERROR, err.Error())
+		return err
 	}
 
 	return c.String(http.StatusOK, "")

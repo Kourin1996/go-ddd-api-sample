@@ -3,7 +3,6 @@ package auth
 import (
 	"net/http"
 
-	"github.com/Kourin1996/go-crud-api-sample/api/controllers/apierror"
 	"github.com/Kourin1996/go-crud-api-sample/api/controllers/middleware"
 	jwtToken "github.com/Kourin1996/go-crud-api-sample/api/models/jwt"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/user"
@@ -32,7 +31,7 @@ func (c *MeController) GetMe(ctx echo.Context) error {
 
 	me, err := c.userService.GetByHashId(tokenData.HashId)
 	if err != nil {
-		return apierror.NewApiError(http.StatusInternalServerError, apierror.ERROR_NOT_FOUND, err.Error())
+		return err
 	}
 
 	return ctx.JSON(http.StatusOK, me)
