@@ -1,8 +1,11 @@
 package user
 
 import (
+	"fmt"
+
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
 	"github.com/Kourin1996/go-crud-api-sample/api/constants"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/errors"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/user"
 )
 
@@ -25,7 +28,7 @@ func (s *UserService) Create(data *user.User) (*user.User, error) {
 func (s *UserService) GetByHashId(hashId string) (*user.User, error) {
 	id, err := common.DecodeHashID(hashId, user.MODEL_NAME, constants.HASHIDS_SALT, constants.HASHIDS_LENGTH)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewInvalidDataError(err)
 	}
 
 	u, err := s.userRepo.Get(id)
@@ -40,6 +43,9 @@ func (s *UserService) GetByUsername(username string) (*user.User, error) {
 	u, err := s.userRepo.GetByUsername(username)
 	if err != nil {
 		return nil, err
+	}
+	if u == nil {
+		return nil, errors.NewNotFoundError(fmt.Errorf("user not found"))
 	}
 
 	return u, nil

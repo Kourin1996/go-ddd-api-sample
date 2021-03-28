@@ -6,6 +6,7 @@ import (
 
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
 	"github.com/Kourin1996/go-crud-api-sample/api/constants"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/errors"
 	"github.com/go-pg/pg/v10/orm"
 )
 
@@ -33,7 +34,7 @@ func (m *BaseModel) AfterScan(ctx context.Context) error {
 func (m *BaseModel) SetId(id int64) error {
 	hashId, err := common.EncodeHashID(m.ID, m.Model, constants.HASHIDS_SALT, constants.HASHIDS_LENGTH)
 	if err != nil {
-		return err
+		return errors.NewInvalidDataError(err)
 	}
 
 	m.ID = id
@@ -44,7 +45,7 @@ func (m *BaseModel) SetId(id int64) error {
 func (m *BaseModel) SetHashId(hashId string) error {
 	id, err := common.DecodeHashID(hashId, m.Model, constants.HASHIDS_SALT, constants.HASHIDS_LENGTH)
 	if err != nil {
-		return err
+		return errors.NewInvalidDataError(err)
 	}
 
 	m.ID = id

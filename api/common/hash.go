@@ -1,8 +1,6 @@
 package common
 
 import (
-	"fmt"
-
 	"github.com/speps/go-hashids"
 )
 
@@ -28,7 +26,7 @@ func DecodeHashID(hashId string, key string, salt string, length int) (int64, er
 	}
 	res := h.Decode(hashId)
 	if len(res) == 0 {
-		return 0, fmt.Errorf("Failed to decode hash id")
+		return 0, err
 	}
 	return int64(res[0]), nil
 }

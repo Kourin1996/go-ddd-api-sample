@@ -6,6 +6,7 @@ import (
 	"github.com/Kourin1996/go-crud-api-sample/api/common"
 	"github.com/Kourin1996/go-crud-api-sample/api/constants"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/book"
+	"github.com/Kourin1996/go-crud-api-sample/api/models/errors"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/jwt"
 	"github.com/Kourin1996/go-crud-api-sample/api/models/user"
 )
@@ -24,7 +25,15 @@ func (s *BookService) Get(hashId string) (*book.Book, error) {
 		return nil, err
 	}
 
-	return s.bookRepo.Get(b.ID)
+	b, err := s.bookRepo.Get(b.ID)
+	if err != nil {
+		return nil, err
+	}
+	if b == nil {
+		return nil, errors.NewNotFoundError(fmt.Errorf("not found"))
+	}
+
+	return b, nil
 }
 
 func (s *BookService) GetBooks(dto *book.GetBooksDto) ([]*book.Book, error) {
@@ -66,8 +75,11 @@ func (s *BookService) Update(tokenData *jwt.TokenData, hashId string, dto *book.
 	if err != nil {
 		return nil, err
 	}
+	if b == nil {
+		return nil, errors.NewNotFoundError(fmt.Errorf("not found"))
+	}
 	if b.UserId != userId {
-		return nil, fmt.Errorf("Cannot update data")
+		return nil, errors.NewNotAllowedError(fmt.Errorf("cannot update data"))
 	}
 
 	return s.bookRepo.Update(book.ID, book)
@@ -86,8 +98,11 @@ func (s *BookService) Delete(tokenData *jwt.TokenData, hashId string) error {
 	if err != nil {
 		return err
 	}
+	if b == nil {
+		return errors.NewNotFoundError(fmt.Errorf("not found"))
+	}
 	if b.UserId != userId {
-		return fmt.Errorf("Cannot delete data")
+		return errors.NewNotAllowedError(fmt.Errorf("cannot delete data"))
 	}
 
 	return s.bookRepo.Delete(b.ID)

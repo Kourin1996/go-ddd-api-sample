@@ -18,6 +18,8 @@ func getStatusAndMessage(err error, showsDetail bool) (int, string) {
 		return http.StatusBadRequest, e.Error()
 	case errors.NotFoundError:
 		return http.StatusNotFound, e.Error()
+	case errors.NotAllowedError:
+		return http.StatusMethodNotAllowed, e.Error()
 	default:
 		if showsDetail {
 			return http.StatusInternalServerError, e.Error()
