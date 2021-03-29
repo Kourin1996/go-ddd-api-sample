@@ -17,7 +17,7 @@ func Printf(format string, args ...interface{}) {
 }
 
 func Printj(j map[string]interface{}) {
-	logJson(PRINT, global, getPrintj, j)
+	logJSON(PRINT, global, getPrintj, j)
 }
 
 func Debug(i ...interface{}) {
@@ -29,7 +29,7 @@ func Debugf(format string, args ...interface{}) {
 }
 
 func Debugj(j map[string]interface{}) {
-	logJson(DEBUG, global, getDebugj, j)
+	logJSON(DEBUG, global, getDebugj, j)
 }
 
 func Info(i ...interface{}) {
@@ -41,7 +41,7 @@ func Infof(format string, args ...interface{}) {
 }
 
 func Infoj(j map[string]interface{}) {
-	logJson(INFO, global, getInfoj, j)
+	logJSON(INFO, global, getInfoj, j)
 }
 
 func Warn(i ...interface{}) {
@@ -53,7 +53,7 @@ func Warnf(format string, args ...interface{}) {
 }
 
 func Warnj(j map[string]interface{}) {
-	logJson(WARN, global, getWarnj, j)
+	logJSON(WARN, global, getWarnj, j)
 }
 
 func Error(i ...interface{}) {
@@ -65,7 +65,7 @@ func Errorf(format string, args ...interface{}) {
 }
 
 func Errorj(j map[string]interface{}) {
-	logJson(ERROR, global, getErrorj, j)
+	logJSON(ERROR, global, getErrorj, j)
 }
 
 func Panic(i ...interface{}) {
@@ -77,7 +77,7 @@ func Panicf(format string, args ...interface{}) {
 }
 
 func Panicj(j map[string]interface{}) {
-	logJson(PANIC, global, getPanicj, j)
+	logJSON(PANIC, global, getPanicj, j)
 }
 
 func Fatal(i ...interface{}) {
@@ -89,5 +89,5 @@ func Fatalf(format string, args ...interface{}) {
 }
 
 func Fatalj(j map[string]interface{}) {
-	logJson(FATAL, global, getFatalj, j)
+	logJSON(FATAL, global, getFatalj, j)
 }

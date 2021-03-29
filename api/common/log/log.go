@@ -58,7 +58,7 @@ func logFormat(level LogLevel, l ILoggerManager, f func(*log.Logger) FormatLogFu
 	}
 }
 
-func logJson(level LogLevel, l ILoggerManager, f func(*log.Logger) JsonLogFunc, json map[string]interface{}) {
+func logJSON(level LogLevel, l ILoggerManager, f func(*log.Logger) JSONLogFunc, json map[string]interface{}) {
 	for _, l := range l.GetLoggers(level) {
 		f(l)(log.JSON(json))
 	}

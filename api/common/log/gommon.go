@@ -6,7 +6,7 @@ import (
 
 type NormalLogFunc func(i ...interface{})
 type FormatLogFunc func(format string, args ...interface{})
-type JsonLogFunc func(j log.JSON)
+type JSONLogFunc func(j log.JSON)
 
 func getPrint(l *log.Logger) NormalLogFunc {
 	return l.Print
@@ -16,7 +16,7 @@ func getPrintf(l *log.Logger) FormatLogFunc {
 	return l.Printf
 }
 
-func getPrintj(l *log.Logger) JsonLogFunc {
+func getPrintj(l *log.Logger) JSONLogFunc {
 	return l.Printj
 }
 
@@ -28,7 +28,7 @@ func getDebugf(l *log.Logger) FormatLogFunc {
 	return l.Debugf
 }
 
-func getDebugj(l *log.Logger) JsonLogFunc {
+func getDebugj(l *log.Logger) JSONLogFunc {
 	return l.Debugj
 }
 
@@ -40,7 +40,7 @@ func getInfof(l *log.Logger) FormatLogFunc {
 	return l.Infof
 }
 
-func getInfoj(l *log.Logger) JsonLogFunc {
+func getInfoj(l *log.Logger) JSONLogFunc {
 	return l.Infoj
 }
 
@@ -52,7 +52,7 @@ func getWarnf(l *log.Logger) FormatLogFunc {
 	return l.Warnf
 }
 
-func getWarnj(l *log.Logger) JsonLogFunc {
+func getWarnj(l *log.Logger) JSONLogFunc {
 	return l.Warnj
 }
 
@@ -64,7 +64,7 @@ func getErrorf(l *log.Logger) FormatLogFunc {
 	return l.Errorf
 }
 
-func getErrorj(l *log.Logger) JsonLogFunc {
+func getErrorj(l *log.Logger) JSONLogFunc {
 	return l.Errorj
 }
 
@@ -76,7 +76,7 @@ func getPanicf(l *log.Logger) FormatLogFunc {
 	return l.Panicf
 }
 
-func getPanicj(l *log.Logger) JsonLogFunc {
+func getPanicj(l *log.Logger) JSONLogFunc {
 	return l.Panicj
 }
 
@@ -88,6 +88,6 @@ func getFatalf(l *log.Logger) FormatLogFunc {
 	return l.Fatalf
 }
 
-func getFatalj(l *log.Logger) JsonLogFunc {
+func getFatalj(l *log.Logger) JSONLogFunc {
 	return l.Fatalj
 }
