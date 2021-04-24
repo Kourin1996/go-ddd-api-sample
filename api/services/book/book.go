@@ -93,7 +93,7 @@ func (s *BookService) Delete(tokenData *jwt.TokenData, hashId string) error {
 
 	b := book.NewEmptyBook()
 	b.SetHashId(hashId)
-
+	b.SetHashId(hashId)
 	b, err = s.bookRepo.Get(b.ID)
 	if err != nil {
 		return err
@@ -106,4 +106,12 @@ func (s *BookService) Delete(tokenData *jwt.TokenData, hashId string) error {
 	}
 
 	return s.bookRepo.Delete(b.ID)
+}
+
+var a = 1
+
+func Hoge() {
+	if a == 1 {
+		fmt.Printf("hoge")
+	}
 }
