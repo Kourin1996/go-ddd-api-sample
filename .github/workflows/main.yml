@@ -24,7 +24,7 @@ jobs:
         uses: reviewdog/action-golangci-lint@v1
         with:
           github_token: ${{ secrets.github_token }}
-          golangci_lint_flags: "--disable-all -E gocyclo --min-complexity 1"
+          golangci_lint_flags: "--disable-all -E gocyclo"
           tool_name: gocyclo
           level: error
       - name: gosec
