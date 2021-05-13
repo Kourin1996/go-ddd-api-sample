@@ -1,6 +1,9 @@
-# go-crud-api-sample
+# go-ddd-api-sample
 
-A sample code of REST API by Echo, go-pg
+A sample code of REST API with Domain Driven Development
+
+* echo
+* go-pg
 
 ## How to run
 
